@@ -1,0 +1,97 @@
+openapi: 3.0.0
+info:
+  title: User-Account
+  description: User account specification to define the user account API
+  contact:
+    email: suport@estiatraining.com
+  version: 1.0.0
+servers:
+  - url: /
+paths:
+  /user:
+    post:
+      summary: User account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_request'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/body_response_success'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/body_response_error'          
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/body_response_error'              
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/body_response_error'              
+        500:
+          description: Server error    
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/body_response_error'                          
+components:
+  schemas:
+    body_request:
+      required:
+        - email
+        - password
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minimum: 10
+          example: suport@estiatraining.com
+        password:
+          minimum: 1
+          type: string
+          format: password
+          example: '123'
+    body_response_success:
+      required:
+        - id
+        - email        
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minimum: 10
+          example: suport@estiatraining.com      
+        id:
+          type: integer
+          format: int64
+          example: 1  
+    body_response_error:
+      required:
+        - code_error
+        - message        
+      type: object
+      properties:
+        code_error:
+          type: integer
+          format: int64
+          minimum: 1
+          example: 13216      
+        message:
+          type: string
+          example: message_to_show                           
