@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: 3.0.1
 info:
   title: User-Account
   description: User account specification to define the user account API
@@ -6,48 +6,139 @@ info:
     email: suport@estiatraining.com
   version: 1.0.0
 servers:
-  - url: /
+  - url: https://localhost:8080/v1
+    description: Production server
+tags:
+  - name: users
+    description: User Account
 paths:
-  /user:
+  /users:
+    get:
+      summary: Retrieve all users
+      tags:
+        - users
+      security:
+        - BearerAuth
+      operationId: getAllUsers
+      responses:
+        200:
+          $ref: '#/components/responses/SuccessArray'
+        401:
+          $ref: '#/components/responses/Unauthorized'                         
+        500:
+          $ref: '#/components/responses/ServerError'  
+  /user:                
     post:
-      summary: User account
+      summary: Create a new user
+      tags:
+        - users      
+      security:
+        - BearerAuth
+      operationId: createUserAccount
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/body_request'
+              $ref: '#/components/schemas/body_request' 
         required: true
       responses:
         200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/body_response_success'
-        400:
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/body_response_error'          
+          $ref: '#/components/responses/Success'
         401:
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/body_response_error'              
-        404:
-          description: Not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/body_response_error'              
+          $ref: '#/components/responses/Unauthorized'                         
         500:
-          description: Server error    
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/body_response_error'                          
+          $ref: '#/components/responses/ServerError'       
+  /user/{id}:                
+    get:
+      summary: Get a user by ID
+      tags:
+        - users      
+      security:
+        - BearerAuth
+      operationId: getUserById
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+            format: int64        
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_request' 
+        required: true        
+      responses:
+        200:
+          $ref: '#/components/responses/Success'
+        401:
+          $ref: '#/components/responses/Unauthorized'    
+        404:
+          $ref: '#/components/responses/NotFound'                                  
+        500:
+          $ref: '#/components/responses/ServerError'                                                                    
+    put:
+      summary: Update a user by ID
+      tags:
+        - users      
+      security:
+        - BearerAuth
+      operationId: updateUserById
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+            format: int64        
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_request' 
+        required: true        
+      responses:
+        200:
+          $ref: '#/components/responses/Success'
+        401:
+          $ref: '#/components/responses/Unauthorized'    
+        404:
+          $ref: '#/components/responses/NotFound'                                  
+        500:
+          $ref: '#/components/responses/ServerError'       
+    delete:
+      summary: Delete a user by ID
+      tags:
+        - users      
+      security:
+        - BearerAuth
+      operationId: deleteUserById
+      parameters:
+        - name: id
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: integer
+            format: int64        
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_request' 
+        required: true        
+      responses:   
+        200:
+          $ref: '#/components/responses/Success'
+        401:
+          $ref: '#/components/responses/Unauthorized'    
+        404:
+          $ref: '#/components/responses/NotFound'                                  
+        500:
+          $ref: '#/components/responses/ServerError'          
 components:
   schemas:
     body_request:
@@ -66,7 +157,7 @@ components:
           type: string
           format: password
           example: '123'
-    body_response_success:
+    user:
       required:
         - id
         - email        
@@ -94,4 +185,54 @@ components:
           example: 13216      
         message:
           type: string
-          example: message_to_show                           
+          example: message_to_show    
+  responses:          
+    Success:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/user'
+    SuccessArray:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/user'            
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/body_response_error'          
+    Unauthorized:
+      description: Unauthorized error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/body_response_error'            
+    Forbidden:
+      description: Forbidden error    
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/body_response_error'                  
+    ServerError:
+      description: Server error      
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/body_response_error'       
+    NotFound:
+      description: Not found      
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/body_response_error'                          
+  securitySchemes:                               
+    BearerAuth:
+      type: http
+      scheme: bearer  
+      bearerFormat: JWT
