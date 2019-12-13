@@ -22,7 +22,7 @@ paths:
       operationId: getAllUsers
       responses:
         200:
-          $ref: '#/components/responses/SuccessArray'
+          $ref: '#/components/responses/SuccessGetAll'
         401:
           $ref: '#/components/responses/Unauthorized'                         
         500:
@@ -36,14 +36,10 @@ paths:
         - BearerAuth
       operationId: createUserAccount
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/body_request' 
-        required: true
+        $ref: '#/components/requestBody/userBody'   
       responses:
-        200:
-          $ref: '#/components/responses/Success'
+        201:
+          $ref: '#/components/responses/Created'
         401:
           $ref: '#/components/responses/Unauthorized'                         
         500:
@@ -63,13 +59,7 @@ paths:
           required: true
           schema:
             type: integer
-            format: int64        
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/body_request' 
-        required: true        
+            format: int64             
       responses:
         200:
           $ref: '#/components/responses/Success'
@@ -95,14 +85,10 @@ paths:
             type: integer
             format: int64        
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/body_request' 
-        required: true        
+        $ref: '#/components/requestBody/userBody'       
       responses:
-        200:
-          $ref: '#/components/responses/Success'
+        202:
+          $ref: '#/components/responses/Accepted'
         401:
           $ref: '#/components/responses/Unauthorized'    
         404:
@@ -123,16 +109,10 @@ paths:
           required: true
           schema:
             type: integer
-            format: int64        
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/body_request' 
-        required: true        
+            format: int64              
       responses:   
-        200:
-          $ref: '#/components/responses/Success'
+        204:
+          description: No Content
         401:
           $ref: '#/components/responses/Unauthorized'    
         404:
@@ -141,7 +121,7 @@ paths:
           $ref: '#/components/responses/ServerError'          
 components:
   schemas:
-    body_request:
+    requestBody:
       required:
         - email
         - password
@@ -150,6 +130,7 @@ components:
         email:
           type: string
           format: email
+          pattern: '^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$'
           minimum: 10
           example: suport@estiatraining.com
         password:
@@ -186,6 +167,13 @@ components:
         message:
           type: string
           example: message_to_show    
+  requestBody:
+    userBody:
+      description: User JSON object required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/requestBody'             
   responses:          
     Success:
       description: OK
@@ -193,7 +181,19 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/user'
-    SuccessArray:
+    Created:
+      description: Created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/user'     
+    Accepted:
+      description: Accepted
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/user'                      
+    SuccessGetAll:
       description: OK
       content:
         application/json:

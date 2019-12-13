@@ -1,0 +1,171 @@
+openapi: 3.0.1
+info:
+  title: Report-Progress-Patient
+  description: Report Specification to Generate Patient Growth Data
+  contact:
+    email: suport@estiatraining.com
+  version: 1.0.0
+servers:
+  - url: https://localhost:8080/v1
+    description: Production server
+tags:
+  - name: report-progress
+    description: Report Account
+paths:     
+  /patient/{id}/progress:                
+    get:
+      summary: Get a all progress through ID patient
+      tags:
+        - report-progress      
+      security:
+        - BearerAuth
+      operationId: getAllProgressThroughPatientById
+      parameters:
+        - name: id
+          in: path
+          description: Patient ID
+          required: true
+          schema:
+            type: integer
+            format: int64     
+      responses:
+        200:
+          $ref: '#/components/responses/Success'
+        401:
+          $ref: '#/components/responses/Unauthorized'    
+        404:
+          $ref: '#/components/responses/NotFound'                                  
+        500:
+          $ref: '#/components/responses/ServerError'                                                                            
+components:
+  schemas:                     
+    progress:
+      required:    
+        - id 
+        - dateProgress
+        - headCircumference
+        - height
+        - weight
+        - patient
+      type: object
+      properties:  
+        id:
+          type: integer
+          format: int64
+          example: 1            
+        dateProgress:
+          type: string
+          format: date
+          minimum: 10
+          example: 10/02/2010
+        headCircumference:          
+          type: number 
+          format: double
+          example: 0.74
+        height:          
+          type: number 
+          format: double
+          example: 1.2
+        weight:
+          type: number 
+          format: double
+          example: 16.2
+        patient:
+          $ref: '#/components/schemas/patient'   
+    patient:
+      required:    
+        - id  
+        - firstName
+        - lastName 
+        - dateBirth               
+        - gender
+        - phoneNumber
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1       
+        dateBirth:
+          type: string
+          format: date
+          minimum: 10
+          example: 10/02/2010
+        firstName:          
+          type: string
+          minimum: 2
+          example: 'Cleison'
+        lastName:          
+          type: string
+          minimum: 2
+          example: 'Melo'   
+        phoneNumber:
+          type: number 
+          format: int32
+          example: 555-6563-5623
+        gender:
+          type: string
+          example: M
+          enum:
+            - M
+            - F                   
+    body_response_error:
+      required:
+        - code_error
+        - message        
+      type: object
+      properties:
+        code_error:
+          type: integer
+          format: int64
+          minimum: 1
+          example: 13216      
+        message:
+          type: string
+          example: message_to_show    
+  responses:          
+    Success:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              oneOf:
+               - $ref: '#/components/schemas/progress'   
+               - $ref: '#/components/schemas/progress'                              
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/body_response_error'          
+    Unauthorized:
+      description: Unauthorized error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/body_response_error'            
+    Forbidden:
+      description: Forbidden error    
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/body_response_error'                  
+    ServerError:
+      description: Server error      
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/body_response_error'       
+    NotFound:
+      description: Not found      
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/body_response_error'                          
+  securitySchemes:   
+    BearerAuth:
+      type: http
+      scheme: bearer  
+      bearerFormat: JWT                              
