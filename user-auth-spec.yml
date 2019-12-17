@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  title: User-Account
+  title: Authentication
   description: User Authentication specification to define the user log into API
   contact:
     email: suport@estiatraining.com
@@ -17,14 +17,14 @@ paths:
       summary: Authentication of the user
       tags:
         - auth      
-      security:
-        - BearerAuth
       operationId: loginUser
       requestBody:
         $ref: '#/components/requestBody/userBody'   
       responses:
         200:
           $ref: '#/components/responses/Success'  
+        400:
+          $ref: '#/components/responses/BadRequest'              
         404:
           $ref: '#/components/responses/NotFound'                              
         500:
@@ -48,21 +48,38 @@ components:
           type: string
           format: password
           example: '123'
-    user:
+    tokenBody:
       required:
-        - id
-        - email        
+        - scope
+        - expires_in
+        - refresh_token
+        - access_token     
+        - developer.email   
       type: object
       properties:
-        email:
+        scope:
           type: string
-          format: email
-          minimum: 10
-          example: suport@estiatraining.com      
-        id:
+          minimum: 1
+          example: read, write      
+        expires_in:
           type: integer
           format: int64
-          example: 1  
+          example: 3600000  
+        refresh_token:
+          type: string
+          format: byte
+          minimum: 1
+          example: rVSmm3QaNa0xBVFbUISz1NZI15akvgLJ    
+        access_token:
+          type: string
+          format: byte          
+          minimum: 1
+          example: AnoHsh2oZ6EFWF4h0KrA0gC5og3a        
+        developer.email:
+          type: string
+          format: email
+          minimum: 1
+          example: suport@estiatraining.com                      
     body_response_error:
       required:
         - code_error
@@ -90,13 +107,13 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/user'       
+            $ref: '#/components/schemas/tokenBody'       
     BadRequest:
       description: Bad request
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/body_response_error'                        
+            $ref: '#/components/schemas/body_response_error'                                    
     ServerError:
       description: Server error      
       content:
