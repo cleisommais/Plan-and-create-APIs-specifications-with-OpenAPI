@@ -266,8 +266,10 @@ components:
         application/json:
           schema:
             type: array
-            items:
-              $ref: '#/components/schemas/progress'            
+            items:  
+              oneOf:
+               - $ref: '#/components/schemas/progress'   
+               - $ref: '#/components/schemas/progress'                        
     BadRequest:
       description: Bad request
       content:

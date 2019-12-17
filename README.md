@@ -11,5 +11,13 @@ How to plan and build APIs specifications? How is the best approach? I will teac
 * Install Vistual Studio Code Editor - [VS Editor](https://visualstudio.microsoft.com/vs/)
 * Install the VS Code plugin *openapi-designer*
 
+### Specs
+
+* Patient account specification
+* User account specification
+* Progress account specification
+* Report Patient Growth Specification
+* User Authentication specification
+
 
 

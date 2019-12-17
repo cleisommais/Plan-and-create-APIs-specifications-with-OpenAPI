@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: Report-Progress-Patient
-  description: Report Specification to Generate Patient Growth Data
+  description: Report Patient Growth Specification
   contact:
     email: suport@estiatraining.com
   version: 1.0.0
