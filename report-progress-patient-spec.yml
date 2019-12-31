@@ -14,7 +14,7 @@ tags:
 paths:     
   /patient/{id}/progress:                
     get:
-      summary: Get a all progress through ID patient
+      summary: Get all progress through ID patient
       tags:
         - report-progress      
       security:
